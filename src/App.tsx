@@ -1,9 +1,8 @@
-import './App.css'
+import "./App.css";
+import GiveConsent from "./consents/give-consent";
 
 function App() {
-  return (
-      <h1>Vite + React</h1>
-  )
+  return <GiveConsent />;
 }
 
-export default App
+export default App;
