@@ -52,7 +52,7 @@ const GiveConsent = () => {
   return (
     <Container>
       <Formik initialValues={initialValues} validate={validate} onSubmit={handleSubmit}>
-        {({ values, submitForm, isSubmitting, errors }) => (
+        {({ values, submitForm, isSubmitting, errors, touched }) => (
           <Form>
             <TextFieldsContainer>
               <Field component={TextField} label="Name" name="name" />
@@ -61,7 +61,7 @@ const GiveConsent = () => {
             <ConsentsLabel>
               <Typography variant="body1">I agree to:</Typography>
             </ConsentsLabel>
-            <CheckboxContainer style={errors.consents ? dangerStyle : {}}>
+            <CheckboxContainer style={touched.consents && errors.consents ? dangerStyle : {}}>
               <FormGroup>
                 {checkboxOptions.map(({ label, value }) => {
                   return (
@@ -78,7 +78,7 @@ const GiveConsent = () => {
                 })}
               </FormGroup>
             </CheckboxContainer>
-            <ErrorMessage name="consents" component="div" className={errors.consents ? "error" : ""} />
+            <ErrorMessage name="consents" component="p" className={errors.consents ? "error" : ""} />
             <ButtonContainer>
               <Button data-cy="submit" variant="contained" color="primary" disabled={isSubmitting} onClick={submitForm}>
                 Give consent
