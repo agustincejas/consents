@@ -25,7 +25,7 @@ const ErrorPage = () => {
         <i>{errorMessage}</i>
       </p>
       <Box sx={{ marginTop: 8 }}>
-        <Button variant="contained" color="primary" onClick={() => navigate("/")}>
+        <Button data-cy="back" variant="contained" color="primary" onClick={() => navigate("/")}>
           Back to home
         </Button>
       </Box>

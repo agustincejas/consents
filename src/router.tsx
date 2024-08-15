@@ -3,6 +3,7 @@ import App from "./App";
 import ErrorPage from "./Error";
 import ConsentList from "./consents/ConsentList";
 import GiveConsent from "./consents/GiveConsent";
+import { PATH_CONSENTS, PATH_GIVE_CONSENT } from "./constants";
 
 const router = createBrowserRouter([
   {
@@ -16,12 +17,12 @@ const router = createBrowserRouter([
       },
 
       {
-        path: "/give-consent",
+        path: PATH_GIVE_CONSENT,
         element: <GiveConsent />,
         errorElement: <ErrorPage />,
       },
       {
-        path: "/consents",
+        path: PATH_CONSENTS,
         element: <ConsentList />,
         errorElement: <ErrorPage />,
       },
