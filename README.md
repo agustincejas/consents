@@ -12,7 +12,7 @@ Install dependencies
 npm i
 ```
 
-Start dev server
+Start dev server on port 3000. --host flag was added to start script to enable cypress accessing the website
 
 ```
 npm run start
@@ -29,8 +29,17 @@ Following approach
 
 # E2e tests
 
-npm run e2e run tests in console
-npm run e2e:open opens cypress ui
+Run tests in console
+
+```
+npm run e2e
+```
+
+Opens cypress ui
+
+```
+npm run e2e:open
+```
 
 Cypress setup with testing library selectors to test as close as the users as possible
 
@@ -57,6 +66,8 @@ Cypress setup with testing library selectors to test as close as the users as po
 
 # Possible extensions
 
-- Change text to keys for translations. Add Language picker
+- Change text to keys for translations, include something like i18n. Add Language picker
 - Implement ErrorBoundary
 - Loading states (Spinners, Skeletons)
+- Create pipeline to have at least following steps: lint, build, unit test, e2e test, deployment
+- Make ConsentsDataTable more generic by adding columns names and properties as props
