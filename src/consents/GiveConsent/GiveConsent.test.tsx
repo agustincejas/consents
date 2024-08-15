@@ -1,12 +1,17 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { GiveConsent } from "./GiveConsent";
-import { fieldEmailErrorRequiredMsg, fieldNameErrorRequiredMsg } from "../../constants";
-import { act } from "react";
+import { fieldEmailErrorFormatMsg, fieldEmailErrorRequiredMsg, fieldNameErrorRequiredMsg } from "../../constants";
+import { act, ReactNode } from "react";
+import { MemoryRouter } from "react-router-dom";
+
+const withRouter = (component: ReactNode) => {
+  return <MemoryRouter>{component}</MemoryRouter>;
+};
 
 describe("GiveConsent", () => {
-  it("GiveConsent works", async () => {
-    render(<GiveConsent />);
+  it("renders all elements", async () => {
+    render(withRouter(<GiveConsent />));
 
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
@@ -18,7 +23,7 @@ describe("GiveConsent", () => {
   });
 
   it("shows error when submitting and name is not present", async () => {
-    render(<GiveConsent />);
+    render(withRouter(<GiveConsent />));
 
     const submitBtn = screen.getByRole("button", { name: /give consent/i });
     await act(() => userEvent.click(submitBtn));
@@ -27,7 +32,7 @@ describe("GiveConsent", () => {
   });
 
   it("shows error when submitting and email is not present", async () => {
-    render(<GiveConsent />);
+    render(withRouter(<GiveConsent />));
 
     const submitBtn = screen.getByRole("button", { name: /give consent/i });
 
@@ -36,20 +41,31 @@ describe("GiveConsent", () => {
     expect(screen.getByText(fieldEmailErrorRequiredMsg)).toBeInTheDocument();
   });
 
-  // it("shows error when email does not match format", async () => {
-  //   render(<GiveConsent />);
-  // });
+  it("shows error when email does not match format", async () => {
+    render(withRouter(<GiveConsent />));
+    const emailInput = screen.getByLabelText(/email/i);
+    const nameInput = screen.getByLabelText(/name/i);
+    const wrongEmail = "notanemail";
 
-  // it("shows error when submitting and no consent is checked", async () => {
-  //   render(<GiveConsent />);
-  // });
+    await act(async () => {
+      await userEvent.type(emailInput, wrongEmail);
 
-  it("sends all data on submit", async () => {
-    render(<GiveConsent />);
+      //remove focus from email input
+      await userEvent.click(nameInput);
+    });
+
+    expect(screen.getByText(fieldEmailErrorFormatMsg)).toBeInTheDocument();
+  });
+
+  it("shows error when submitting and no consent is checked", async () => {
+    render(withRouter(<GiveConsent />));
+  });
+
+  it("inputs correct data", async () => {
+    render(withRouter(<GiveConsent />));
 
     const nameInput = screen.getByLabelText(/name/i);
     const emailInput = screen.getByLabelText(/email/i);
-    const submitBtn = screen.getByRole("button", { name: /give consent/i });
     const adsCheckbox = screen.getByRole("checkbox", { name: /be shown targeted ads/i });
     const nameToSend = "Test name";
     const emailToSend = "email@mail.com";
@@ -58,7 +74,6 @@ describe("GiveConsent", () => {
       await userEvent.type(nameInput, nameToSend);
       await userEvent.type(emailInput, emailToSend);
       await userEvent.click(adsCheckbox);
-      await userEvent.click(submitBtn);
     });
 
     expect(nameInput).toHaveValue(nameToSend);

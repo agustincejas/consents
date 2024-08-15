@@ -1,11 +1,10 @@
 import { CheckboxProps } from "@mui/material";
 
-//TODO: can be moved to other place
 interface CheckboxField extends CheckboxProps {
   label: string;
   value: string;
 }
-//TODO: can be moved to other place
+
 export const checkboxOptions: CheckboxField[] = [
   {
     label: "Receive newsletter",
@@ -20,3 +19,9 @@ export const checkboxOptions: CheckboxField[] = [
     value: "statistics",
   },
 ];
+
+export const ConsentsLabels = {
+  newsletter: "Receive newsletter",
+  ads: "Be shown targeted ads",
+  statistics: "Contribute to anonymous visit statistics",
+};

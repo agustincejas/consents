@@ -1,26 +1,32 @@
 import { Button, Container, FormGroup, Typography } from "@mui/material";
 import { ButtonContainer, CheckboxContainer, ConsentsLabel, TextFieldsContainer } from "./GiveConsent.styles";
-import { ErrorMessage, Field, Form, Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik, FormikHelpers } from "formik";
 import { TextField, CheckboxWithLabel } from "formik-mui";
 import { checkboxOptions } from "./config";
-import { fieldEmailErrorRequiredMsg, fieldNameErrorRequiredMsg } from "../../constants";
-
-interface FormValues {
-  email: string;
-  name: string;
-  consents: string[] | string;
-}
+import {
+  ERROR_COLOR,
+  fieldConsentsErrorRequiredMsg,
+  fieldEmailErrorFormatMsg,
+  fieldEmailErrorRequiredMsg,
+  fieldNameErrorRequiredMsg,
+} from "../../constants";
+import { Consent, ConsentFormErrors } from "../../interfaces/consents";
+import { useNavigate } from "react-router-dom";
+import { usePostConsent } from "../../hooks/use-post-consent";
 
 const GiveConsent = () => {
-  const initialValues: FormValues = { name: "", email: "", consents: [] };
-  const dangerStyle = { borderColor: "#d32f2f", color: "#d32f2f" };
-  const validate = (values: FormValues) => {
-    const errors: Partial<FormValues> = {};
+  const navigate = useNavigate();
+  const { mutateAsync: postConsent } = usePostConsent();
+  const initialValues: Consent = { name: "", email: "", consents: [] };
+  const dangerStyle = { borderColor: ERROR_COLOR, color: ERROR_COLOR };
+
+  const validate = (values: Consent) => {
+    const errors: Partial<ConsentFormErrors> = {};
 
     if (!values.email) {
       errors.email = fieldEmailErrorRequiredMsg;
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-      errors.email = "Invalid email address";
+      errors.email = fieldEmailErrorFormatMsg;
     }
 
     if (!values.name) {
@@ -28,24 +34,23 @@ const GiveConsent = () => {
     }
 
     if (!values.consents.length) {
-      errors.consents = "One option must be selected";
+      errors.consents = fieldConsentsErrorRequiredMsg;
     }
 
     return errors;
   };
 
+  const handleSubmit = async (values: Consent, formikHelpers: FormikHelpers<Consent>) => {
+    const { setSubmitting } = formikHelpers;
+    setSubmitting(true);
+    await postConsent(values);
+    setSubmitting(false);
+    navigate("../consents");
+  };
+
   return (
     <Container>
-      <Formik
-        initialValues={initialValues}
-        validate={validate}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            setSubmitting(false);
-            alert(JSON.stringify(values, null, 2));
-          }, 500);
-        }}
-      >
+      <Formik initialValues={initialValues} validate={validate} onSubmit={handleSubmit}>
         {({ values, submitForm, isSubmitting, errors }) => (
           <Form>
             <TextFieldsContainer>
@@ -74,7 +79,7 @@ const GiveConsent = () => {
             </CheckboxContainer>
             <ErrorMessage name="consents" component="div" className={errors.consents ? "error" : ""} />
             <ButtonContainer>
-              <Button variant="contained" color="primary" disabled={isSubmitting} onClick={submitForm}>
+              <Button data-cy="submit" variant="contained" color="primary" disabled={isSubmitting} onClick={submitForm}>
                 Give consent
               </Button>
             </ButtonContainer>
