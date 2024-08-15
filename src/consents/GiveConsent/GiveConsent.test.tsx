@@ -4,10 +4,19 @@ import { GiveConsent } from "./GiveConsent";
 import { fieldEmailErrorFormatMsg, fieldEmailErrorRequiredMsg, fieldNameErrorRequiredMsg } from "../../constants";
 import { act, ReactNode } from "react";
 import { MemoryRouter } from "react-router-dom";
+import { vi } from "vitest";
 
 const withRouter = (component: ReactNode) => {
   return <MemoryRouter>{component}</MemoryRouter>;
 };
+
+vi.mock("../../hooks/use-post-consent", async () => {
+  return {
+    usePostConsent: vi.fn(() => ({
+      mutateAsync: vi.fn(),
+    })),
+  };
+});
 
 describe("GiveConsent", () => {
   it("renders all elements", async () => {
