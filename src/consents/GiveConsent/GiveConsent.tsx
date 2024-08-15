@@ -4,6 +4,7 @@ import { ErrorMessage, Field, Form, Formik, FormikHelpers } from "formik";
 import { TextField, CheckboxWithLabel } from "formik-mui";
 import { checkboxOptions } from "./config";
 import {
+  EMAIL_REG_EXP,
   ERROR_COLOR,
   fieldConsentsErrorRequiredMsg,
   fieldEmailErrorFormatMsg,
@@ -25,7 +26,7 @@ const GiveConsent = () => {
 
     if (!values.email) {
       errors.email = fieldEmailErrorRequiredMsg;
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+    } else if (!EMAIL_REG_EXP.test(values.email)) {
       errors.email = fieldEmailErrorFormatMsg;
     }
 
